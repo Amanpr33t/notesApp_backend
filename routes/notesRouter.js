@@ -1,6 +1,6 @@
 const express= require('express')
 const router= express.Router()
-const {addNote,getNote,getAllNotes,deleteNote,editNote}= require('../controllers/notes')
+const {addNote,getNote,getAllNotes,deleteNote,editNote,deleteSelectedNotes}= require('../controllers/notes')
 const {authenticateUser}=require('../middleware/authentications')
 
 
@@ -10,6 +10,6 @@ router.get('/getAllNotes',authenticateUser,getAllNotes)
 router.get('/getNote/:id',authenticateUser,getNote)
 router.delete('/deleteNote/:id',authenticateUser,deleteNote)
 router.patch('/editNote/:id',authenticateUser,editNote)
-//router.delete('/deleteSelectedNotes/:id',authenticateUser,deleteSelectedNotes)
+router.delete('/deleteSelectedNotes/:id',authenticateUser,deleteSelectedNotes)
 
 module.exports= router
