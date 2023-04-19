@@ -40,7 +40,7 @@ const getNote = async (req, res) => {
         if (!note) {
             throw new CustomAPIError('note not found', 404)
         }
-        res.status(StatusCodes.OK).json({ status: 'ok', note })
+        return res.status(StatusCodes.OK).json({ status: 'ok', note })
     } catch (error) {
         throw new Error(error)
     }
@@ -58,7 +58,7 @@ const getAllNotes = async (req, res) => {
         const allNotes = await Note.find({
             createdBy: req.user.userId
         }).sort({ createdAt: -1 })
-        res.status(StatusCodes.OK).json({ status: 'ok', count: allNotes.length, allNotes })
+        return res.status(StatusCodes.OK).json({ status: 'ok', count: allNotes.length, allNotes })
     } catch (error) {
         throw new Error(error)
     }
@@ -76,7 +76,7 @@ const deleteNote = async (req, res) => {
             throw new CustomAPIError('Note not found', 204)
         }
         note.remove()
-        res.status(StatusCodes.OK).send({ status: 'ok', msg: 'Note has been removed' })
+        return res.status(StatusCodes.OK).send({ status: 'ok', msg: 'Note has been removed' })
     } catch (error) {
         throw new Error(error)
     }
@@ -94,7 +94,7 @@ const deleteSelectedNotes = async (req, res) => {
             }
 
         });
-        res.status(StatusCodes.OK).json({ status: 'ok', msg: 'All selected notes have been successfully deleted' })
+        return res.status(StatusCodes.OK).json({ status: 'ok', msg: 'All selected notes have been successfully deleted' })
     } catch (error) {
         throw new Error(error)
     }
@@ -140,7 +140,7 @@ const editNote = async (req, res) => {
         },
             req.body,
             { new: true, runValidators: true })
-        res.status(StatusCodes.OK).json({ status: 'ok', msg: 'note has been updated', updatedNote })
+        return res.status(StatusCodes.OK).json({ status: 'ok', msg: 'note has been updated', updatedNote })
     } catch (error) {
         throw new Error(error)
     }

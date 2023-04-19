@@ -12,8 +12,7 @@ const contact = async (req, res) => {
         sendEmail(emailContent)
         res.status(200).json({ status: 'ok', msg: 'Email has been sent' })
     } catch (error) {
-        res.status(200).json({ msg: 'Some error occured' })
-        throw new CustomAPIError('Some error ocuured', 400)
+        throw new Error(error)
     }
 
 }

@@ -34,7 +34,7 @@ const signup = async (req, res) => {
        // const verificationToken = crypto.randomBytes(3).toString('hex')
         const user=await User.create({  email, password })
         const authToken = user.createJWT()
-        res.status(StatusCodes.CREATED).json({ status: 'ok', msg:'Account has been created',authToken })
+        return res.status(StatusCodes.CREATED).json({ status: 'ok', msg:'Account has been created',authToken })
 
         //const verificationLink=`${origin}/user/verifyEmail?token=${verificationToken}&email=${email}`
         //const verificationMessage=`<a href="${verificationLink}">Verify Email</a>`
@@ -50,7 +50,6 @@ const signup = async (req, res) => {
 
 
     } catch (error) {
-        res.status(400).msg(error)
         throw new Error(error)
     }
 
@@ -127,7 +126,7 @@ const login = async (req, res) => {
             return
         }*/
         const authToken = user.createJWT()
-        res.status(StatusCodes.OK).json({ status: 'ok', authToken })
+        return res.status(StatusCodes.OK).json({ status: 'ok', authToken })
         //use this for cookies method
         /*
         const tokenUser={
@@ -230,7 +229,7 @@ const forgotPassword = async (req, res) => {
         await User.findOneAndUpdate({ email },
             { passwordToken, passwordTokenExpirationDate ,forgotPasswordEnabler: true},
             { new: true, runValidators: true })
-        res.status(StatusCodes.OK).json({msg:'Check your email'})
+       return res.status(StatusCodes.OK).json({msg:'Check your email'})
     } catch (error) {
        throw new Error(error)
     }
