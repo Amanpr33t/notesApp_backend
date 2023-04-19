@@ -26,28 +26,9 @@ const signup = async (req, res) => {
             res.status(StatusCodes.BAD_REQUEST).json({ status:'emailExists',msg: 'Email already exists' })
             throw new CustomAPIError('email already exists', 400)
         }
-
-        //const isFirstAccount = await User.countDocuments({}) === 0
-       // const role = isFirstAccount ? 'admin' : 'user'
-
-
-       // const verificationToken = crypto.randomBytes(3).toString('hex')
         const user=await User.create({  email, password })
         const authToken = user.createJWT()
         return res.status(StatusCodes.CREATED).json({ status: 'ok', msg:'Account has been created',authToken })
-
-        //const verificationLink=`${origin}/user/verifyEmail?token=${verificationToken}&email=${email}`
-        //const verificationMessage=`<a href="${verificationLink}">Verify Email</a>`
-
-
-       /* const emailInput = {
-            from: 'aman11865@gmail.com',
-            to: email,
-            subject: 'Email Confirmation',
-            msg: `<h4>Hello, ${name}</h4>,your confirmation code for notesApp is ${verificationToken}`
-        }
-        await sendEmail(emailInput)*/
-
 
     } catch (error) {
         throw new Error(error)
@@ -55,38 +36,6 @@ const signup = async (req, res) => {
 
 }
 
-/*const login=async(req,res)=>{
-    const {email,password}=req.body
-    if(!email || !password){
-        throw new CustomAPIError('enter email and password ',400)
-    }
-    const user= await User.findOne({email}).populate('notes')
-    if(!user){
-        throw new CustomAPIError('invalid credentials ',401)
-    }
-    
-    const isPasswordCorrect=await user.comparePassword(password)
-
-    if(!isPasswordCorrect){
-        throw new CustomAPIError('invalid credentials ',401)
-    }
-    if(!user.isVerified){
-        throw new CustomAPIError('user nor verified' ,401)
-    }
-    //const token= user.createJWT()
-    const tokenUser={
-        name:user.name,
-        userId:user._id,
-        role:user.role
-    }
-
-     const token= createJWT({payload:tokenUser})
-     //cookies part will be done later
-     attachCookiesToResponse({res,token})
-   // res.status(StatusCodes.CREATED).json({user:user.name,token})
-    res.status(StatusCodes.CREATED).json({user:user.name,token,notes:user.notes})
-    req.email=email
- }*/
 
 const login = async (req, res) => {
     try {
@@ -95,7 +44,6 @@ const login = async (req, res) => {
             res.status(StatusCodes.BAD_REQUEST).json({ msg: 'Please enter email and password' })
             throw new CustomAPIError('Please enter email and password ', 400)
         }
-        //const user = await User.findOne({ email }).populate('notes')
         const user = await User.findOne({ email })
         if (!user) {
             res.status(StatusCodes.BAD_REQUEST).json({status:'invalid', msg:'Invalid credentials' })
@@ -109,95 +57,15 @@ const login = async (req, res) => {
             res.status(StatusCodes.BAD_REQUEST).json({status:'invalid',msg:'Invalid credentials' })
             throw new CustomAPIError('Invalid credentials', 401)
         }
-       /* if (!user.isVerified) {
-            const verificationToken = crypto.randomBytes(3).toString('hex')
-            await User.findOneAndUpdate({ email },
-                { verificationToken },
-                { new: true, runValidators: true })
-            const emailInput = {
-                from: 'aman11865@gmail.com',
-                to: email,
-                subject: 'Email Confirmation',
-                msg: `<h4>Hello, ${user.name}</h4>,your confirmation code for notesApp is ${verificationToken}`
-            }
-            await sendEmail(emailInput)
-
-            res.status(StatusCodes.BAD_REQUEST).json({ status: 'notVerified', verificationToken: user.verificationToken })
-            return
-        }*/
         const authToken = user.createJWT()
         return res.status(StatusCodes.OK).json({ status: 'ok', authToken })
-        //use this for cookies method
-        /*
-        const tokenUser={
-            name:user.name,
-            userId:user._id,
-            role:user.role
-        }
-        await refreshTokenCreator(req,res,tokenUser)*/
     } catch (error) {
         throw new Error(error)
     }
-
-    /*let refreshToken
-    const existingToken= await Token.find({user:user._id})
-    
-    if(existingToken && existingToken?.refreshToken){
-        const {isValid}= existingToken
-        if(!isValid){
-            throw new CustomAPIError('invalid credentials',401)
-        }
-        refreshToken=existingToken.refreshToken
-        attachCookiesToResponse({res,user:tokenUser,refreshToken})
-        res.status(StatusCodes.OK).json({user:user.tokenUser})
-        return
-    }
-    
-     refreshToken= crypto.randomBytes(40).toString('hex')
-    const userAgent= req.headers['user-agent']
-    const ip= req.ip
-    const userToken={
-        refreshToken,
-        ip,
-        userAgent,
-        user:user._id
-    }
-    await Token.create(userToken)
-
-
-     //const token= createJWT({payload:tokenUser})
-     //cookies part will be done later
-     attachCookiesToResponse({res,user:tokenUser,refreshToken})
-   // res.status(StatusCodes.CREATED).json({user:user.name,token})
-    res.status(StatusCodes.CREATED).json({user:user.name,notes:user.notes})
-    */
 }
 
-const forgotPassword = async (req, res) => {
+/*const forgotPassword = async (req, res) => {
     try {
-
-        /*const { email: userEmail, token } = req.query
-        if (userEmail && token) {
-            const user = await User.findOne({ email: userEmail })
-            if (!user) {
-                res.status(StatusCodes.BAD_REQUEST).json({msg:'Wrong credentials'})
-                throw new CustomAPIError('wrong credentials', 400)
-            }
-            if (token !== user.passwordToken) {
-                res.status(StatusCodes.BAD_REQUEST).json({msg:'Wrong credentials'})
-                throw new CustomAPIError('wrong credentials', 400)
-            }
-            if (user.passwordTokenExpirationDate.getTime() <= Date.now()) {
-                res.status(StatusCodes.BAD_REQUEST).json({msg:'Session expired'})
-                throw new CustomAPIError('session expired', 400)
-            }
-            await User.findOneAndUpdate({ email: userEmail },
-                { forgotPasswordEnabler: true },
-                { new: true, runValidators: true })
-            //redirect to frontend where new password will be set
-            res.redirect('https://www.geeksforgeeks.org')
-            return
-        }*/
 
         const { email } = req.body
         if (!email) {
@@ -210,8 +78,6 @@ const forgotPassword = async (req, res) => {
             throw new CustomAPIError('wrong credentials', 400)
         }
         const passwordToken = crypto.randomBytes(3).toString('hex')
-        /*const resetURL = `${origin}/user/forgotPassword?token=${passwordToken}&email=${email}`
-        const msg = `<p>Please reset password by clicking on the following link: <a href="${resetURL}">Reset password</a></p>`*/
         const msg=`<p>Authentication token for password updation is <h1>${passwordToken}</h2></p>`
         const emailData = {
             from: process.env.ADMIN_EMAIL,
@@ -223,9 +89,6 @@ const forgotPassword = async (req, res) => {
 
         const tenMinutes = 1000 * 60 * 10
         const passwordTokenExpirationDate = new Date(Date.now() + tenMinutes)
-        /*user.passwordToken=passwordToken
-        user.passwordTokenExpirationDate=passwordTokenExpirationDate
-        await user.save()*/
         await User.findOneAndUpdate({ email },
             { passwordToken, passwordTokenExpirationDate ,forgotPasswordEnabler: true},
             { new: true, runValidators: true })
@@ -237,7 +100,6 @@ const forgotPassword = async (req, res) => {
 }
 
 const setForgotPassword = async (req, res) => {
-    //const user = await User.findOne({ _id: req.user.userId })
     const { email,password,passwordToken } = req.body
     const user = await User.findOne({ email,passwordToken })
     if(!user){
@@ -284,10 +146,6 @@ const changePassword = async (req, res) => {
             res.status(StatusCodes.BAD_REQUEST).json({msg:'Invalid credentials'})
             throw new CustomAPIError('invalid credentials', 401)
         }
-        /* await User.findOneAndUpdate({_id:req.user.userId},req.body,{
-          new:true,
-          runValidators:true
-        })*/
         user.password = newPassword
         await user.save()
         res.status(StatusCodes.OK).json({ status: 'ok', msg: 'Password successfully updated' })
@@ -305,17 +163,11 @@ const deleteUser = async (req, res) => {
     }
     await User.findOneAndDelete({ _id: userId })
     await Note.deleteMany({ createdBy: userId })
-    //this didn't work
-    //const user= User.findOne({_id:userId})
-    //await user.remove()
     res.status(StatusCodes.OK).json({ msg: 'account deleted successfully' })
 }
 
 const verifyEmail = async (req, res) => {
     try {
-        //this is used for frontend
-        //const {email,verificationToken}= req.body
-        //const {email,token:verificationToken}= req.query 
         const { email, token: verificationToken } = req.body
         const user = await User.findOne({ email })
         if (!user) {
@@ -329,7 +181,6 @@ const verifyEmail = async (req, res) => {
         }
         if (user.isVerified) {
             throw new CustomAPIError('user already verified', 400)
-            //here redirect to frontend - add it
         }
         await User.findOneAndUpdate({ email },
             { verificationToken: '', verified: new Date(Date.now()), isVerified: true },
@@ -339,27 +190,20 @@ const verifyEmail = async (req, res) => {
         if (updatedUser.isVerified) {
             const authToken = user.createJWT()
             res.status(StatusCodes.OK).json({ status: 'ok', isVerified: true, authToken })
-            //use this for cookies method
-            /* const tokenUser={
-                 name:updatedUser.name,
-                 userId:updatedUser._id,
-                 role:updatedUser.role
-             }
-         await refreshTokenCreator(req,res,tokenUser)*/
         }
     } catch (error) {
         console.log(error)
     }
 
-}
+}*/
 
 module.exports = {
     signup,
     login,
-    forgotPassword,
+    /*forgotPassword,
     getAllUsers,
     changePassword,
     deleteUser,
     verifyEmail,
-    setForgotPassword
+    setForgotPassword*/
 }

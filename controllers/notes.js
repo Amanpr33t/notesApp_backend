@@ -101,7 +101,7 @@ const deleteSelectedNotes = async (req, res) => {
 
 }
 
-const deleteAllNotes = async (req, res) => {
+/*const deleteAllNotes = async (req, res) => {
     try {
         const notes = await Note.find({ createdBy: req.user.userId })
         if (notes.length === 0) {
@@ -116,7 +116,7 @@ const deleteAllNotes = async (req, res) => {
         throw new Error(error)
     }
 
-}
+}*/
 
 const editNote = async (req, res) => {
     try {
@@ -152,6 +152,6 @@ module.exports = {
     getAllNotes,
     deleteNote,
     editNote,
-    deleteAllNotes,
+    //deleteAllNotes,
     deleteSelectedNotes
 }

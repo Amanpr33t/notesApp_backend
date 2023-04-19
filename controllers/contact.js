@@ -1,4 +1,4 @@
-const CustomAPIError = require("../errors/custom-error")
+/*const CustomAPIError = require("../errors/custom-error")
 const sendEmail = require('../utils/sendEmail')
 const contact = async (req, res) => {
     try {
@@ -16,4 +16,4 @@ const contact = async (req, res) => {
     }
 
 }
-module.exports = contact
+module.exports = contact*/
