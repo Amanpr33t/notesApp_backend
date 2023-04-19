@@ -8,7 +8,7 @@ const notesRouter= require('./routes/notesRouter')
 const imageRouter=require('./routes/imageRouter')
 //const contactRouter=require('./routes/contactRouter')
 const connectDB= require('./db/connect')
-const port= process.env.PORT || 3000
+const port= process.env.PORT || 3033
 const mongoose= require('mongoose')
 mongoose.set('strictQuery', true)
 require('dotenv').config()
